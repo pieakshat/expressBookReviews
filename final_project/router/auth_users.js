@@ -38,9 +38,9 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
   return res.status(200).json({ message: "Review added/updated successfully", reviews: books[isbn].reviews });
 });
 
-// Delete a book review (isbn passed as query param)
+// Delete a book review (isbn passed in request body)
 regd_users.delete("/auth/review", (req, res) => {
-  const isbn = req.query.isbn;
+  const isbn = req.body.isbn;
   const username = req.user.username;
   if (!isbn || !books[isbn]) {
     return res.status(404).json({ message: "Book not found" });
@@ -49,7 +49,7 @@ regd_users.delete("/auth/review", (req, res) => {
     return res.status(404).json({ message: "No review found for this user" });
   }
   delete books[isbn].reviews[username];
-  return res.status(200).json({ message: "Review successfully deleted", reviews: books[isbn].reviews });
+  return res.status(200).json({ message: "Review successfully deleted" });
 });
 
 module.exports.authenticated = regd_users;

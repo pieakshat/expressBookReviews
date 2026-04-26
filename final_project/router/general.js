@@ -5,6 +5,12 @@ let isValid = require("./auth_users.js").isValid;
 let users = require("./auth_users.js").users;
 const public_users = express.Router();
 
+// Reusable helper to fetch all books via Axios
+const fetchBooks = async () => {
+  const response = await axios.get('http://localhost:5000/books');
+  return response.data;
+};
+
 public_users.post("/register", (req, res) => {
   const { username, password } = req.body;
   if (!username || !password) {
@@ -17,27 +23,27 @@ public_users.post("/register", (req, res) => {
   return res.status(200).json({ message: "User successfully registered. Now you can login." });
 });
 
-// Get all books using async/await with Axios
-public_users.get('/', async (req, res) => {
-  try {
-    const response = await axios.get('http://localhost:5000/books');
-    return res.status(200).json(response.data);
-  } catch (err) {
-    return res.status(200).json(books);
-  }
-});
-
 // Internal endpoint to serve raw books data
 public_users.get('/books', (req, res) => {
   return res.status(200).json(books);
+});
+
+// Get all books using async/await with Axios
+public_users.get('/', async (req, res) => {
+  try {
+    const allBooks = await fetchBooks();
+    return res.status(200).json(allBooks);
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
+  }
 });
 
 // Get book by ISBN using async/await with Axios
 public_users.get('/isbn/:isbn', async (req, res) => {
   try {
     const isbn = req.params.isbn;
-    const response = await axios.get('http://localhost:5000/books');
-    const book = response.data[isbn];
+    const allBooks = await fetchBooks();
+    const book = allBooks[isbn];
     if (book) {
       return res.status(200).json(book);
     } else {
@@ -52,8 +58,8 @@ public_users.get('/isbn/:isbn', async (req, res) => {
 public_users.get('/author/:author', async (req, res) => {
   try {
     const author = req.params.author;
-    const response = await axios.get('http://localhost:5000/books');
-    const matched = Object.entries(response.data)
+    const allBooks = await fetchBooks();
+    const matched = Object.entries(allBooks)
       .filter(([, b]) => b.author.toLowerCase() === author.toLowerCase())
       .map(([isbn, b]) => ({ isbn, ...b }));
     if (matched.length > 0) {
@@ -70,8 +76,8 @@ public_users.get('/author/:author', async (req, res) => {
 public_users.get('/title/:title', async (req, res) => {
   try {
     const title = req.params.title;
-    const response = await axios.get('http://localhost:5000/books');
-    const matched = Object.entries(response.data)
+    const allBooks = await fetchBooks();
+    const matched = Object.entries(allBooks)
       .filter(([, b]) => b.title.toLowerCase().includes(title.toLowerCase()))
       .map(([isbn, b]) => ({ isbn, ...b }));
     if (matched.length > 0) {
@@ -84,12 +90,19 @@ public_users.get('/title/:title', async (req, res) => {
   }
 });
 
-// Get all reviews across all books
+// Get all reviews; returns message if none exist
 public_users.get('/review', (req, res) => {
   const allReviews = {};
+  let hasReviews = false;
   Object.entries(books).forEach(([isbn, book]) => {
-    allReviews[isbn] = book.reviews;
+    if (Object.keys(book.reviews).length > 0) {
+      allReviews[isbn] = book.reviews;
+      hasReviews = true;
+    }
   });
+  if (!hasReviews) {
+    return res.status(200).json({ message: "No reviews found for this book." });
+  }
   return res.status(200).json(allReviews);
 });
 

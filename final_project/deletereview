@@ -1,5 +1,6 @@
-curl -s -X DELETE "http://localhost:5000/customer/auth/review?isbn=1" \
+curl -s -X DELETE "http://localhost:5000/customer/auth/review" \
   -H "Content-Type: application/json" \
+  -d '{"isbn":"1"}' \
   -b cookies.txt
 
-{"message":"Review successfully deleted","reviews":{}}
+{"message":"Review successfully deleted"}
