@@ -1,10 +1,27 @@
 curl -s https://api.github.com/repos/pieakshat/expressBookReviews
 
 {
+  "id": 1221564671,
+  "name": "expressBookReviews",
   "full_name": "pieakshat/expressBookReviews",
+  "private": false,
   "fork": true,
   "html_url": "https://github.com/pieakshat/expressBookReviews",
+  "description": "nodejsFinalModule",
   "parent": {
+    "id": 533628036,
+    "name": "expressBookReviews",
+    "full_name": "ibm-developer-skills-network/expressBookReviews",
+    "private": false,
+    "owner": {
+      "login": "ibm-developer-skills-network",
+      "html_url": "https://github.com/ibm-developer-skills-network"
+    },
+    "html_url": "https://github.com/ibm-developer-skills-network/expressBookReviews",
+    "description": "nodejsFinalModule",
+    "fork": false
+  },
+  "source": {
     "full_name": "ibm-developer-skills-network/expressBookReviews",
     "html_url": "https://github.com/ibm-developer-skills-network/expressBookReviews"
   }
