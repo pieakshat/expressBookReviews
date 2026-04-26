@@ -1,0 +1,11 @@
+curl -s https://api.github.com/repos/pieakshat/expressBookReviews
+
+{
+  "full_name": "pieakshat/expressBookReviews",
+  "fork": true,
+  "html_url": "https://github.com/pieakshat/expressBookReviews",
+  "parent": {
+    "full_name": "ibm-developer-skills-network/expressBookReviews",
+    "html_url": "https://github.com/ibm-developer-skills-network/expressBookReviews"
+  }
+}
