@@ -84,6 +84,15 @@ public_users.get('/title/:title', async (req, res) => {
   }
 });
 
+// Get all reviews across all books
+public_users.get('/review', (req, res) => {
+  const allReviews = {};
+  Object.entries(books).forEach(([isbn, book]) => {
+    allReviews[isbn] = book.reviews;
+  });
+  return res.status(200).json(allReviews);
+});
+
 // Get book review by ISBN
 public_users.get('/review/:isbn', (req, res) => {
   const isbn = req.params.isbn;
